@@ -2,7 +2,7 @@
   "name": "obsidian-clipper",
   "displayName": "Obsidian clipper",
   "version": "0.0.1",
-  "description": "Easy to clip web content to your obsidian valut",
+  "description": "Easy to clip web content to your obsidian vault",
   "author": "Ruoyu",
   "scripts": {
     "dev": "plasmo dev",
@@ -10,18 +10,20 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@mozilla/readability": "^0.4.2",
     "plasmo": "0.67.1",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "turndown": "^7.1.1"
   },
   "devDependencies": {
+    "@plasmohq/prettier-plugin-sort-imports": "3.6.3",
     "@types/chrome": "0.0.210",
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "18.0.10",
     "prettier": "2.8.3",
-    "typescript": "4.9.4",
-    "@plasmohq/prettier-plugin-sort-imports": "3.6.3"
+    "typescript": "4.9.4"
   },
   "manifest": {
     "host_permissions": [
