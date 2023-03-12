@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 
+import "../style/base.css"
+
 function IndexPopup() {
   const [content, setParsedContent] = useState<any>({})
   const article = "# " + content.title + "\n" + content.markdownBody
@@ -32,7 +34,9 @@ function IndexPopup() {
         flexDirection: "column",
         padding: 16
       }}>
-      <textarea style={{ height: 500 }} value={article}></textarea>
+      <textarea
+        style={{ height: 500, resize: "none" }}
+        value={article}></textarea>
       <button onClick={copyToClipboard}>Copy To Clipboard</button>
     </div>
   )
