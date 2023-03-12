@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react"
 
 function IndexPopup() {
-  const [article, setParsedArticle] = useState<any>({})
+  const [content, setParsedContent] = useState<any>({})
+  const article = "# " + content.title + "\n" + content.markdownBody
 
   useEffect(() => {
     const parsedContentListener = ({ target, article }) => {
       if (target === "popup") {
-        setParsedArticle(article)
+        setParsedContent(article)
       }
     }
     if (chrome) {
@@ -18,20 +19,21 @@ function IndexPopup() {
     }
   }, [])
 
-  const handleActive = () => {
-    console.log(article)
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(article)
   }
 
   return (
     <div
       style={{
+        width: "400px",
+        height: "500px",
         display: "flex",
         flexDirection: "column",
         padding: 16
       }}>
-      <h2>Hello World</h2>
-      <p>{article.markdownBody && article.markdownBody}</p>
-      <button onClick={handleActive}>Active</button>
+      <textarea style={{ height: 500 }} value={article}></textarea>
+      <button onClick={copyToClipboard}>Copy To Clipboard</button>
     </div>
   )
 }
