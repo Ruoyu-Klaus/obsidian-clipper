@@ -8,3 +8,8 @@ pnpm dev
 npm run dev
 ```
 
+## Permission
+
+- Access tabs: used to access the website content when the icon in the browser bar is clicked.
+- Manage Downloads: necessary to be able to download the markdown file.
+

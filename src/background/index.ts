@@ -1,22 +1,23 @@
+import type { Article, Message } from "~types"
+
 export {}
+let _article: Article
 
 if (chrome) {
-  var article = {}
-
-  function notify(message) {
-    const { target, article: _article } = message
-    if (target === "background" && _article) {
-      console.log(_article)
-      article = _article
+  function notify(message: Message<Article>) {
+    const { target, payload } = message
+    if (target === "background" && payload.markdownContent) {
+      _article = payload
     }
   }
 
-  function sendArticleToPopup(message) {
+  function sendArticleToPopup(message: Message<string>) {
     const { target, payload } = message
     if (target === "background" && payload === "popup opened") {
-      console.log(article)
+      console.log("_article")
 
-      chrome.runtime.sendMessage({ target: "popup", article })
+      const message: Message<Article> = { target: "popup", payload: _article }
+      chrome.runtime.sendMessage(message)
     }
   }
   chrome.runtime.onMessage.addListener(notify)
