@@ -12,18 +12,17 @@ function notifyExtension() {
 
   const markdownContent = getMarkDown(article)
 
-  const message: Message<Article> = {
-    target: "background",
-    payload: { ...article, markdownContent }
-  }
-
-  chrome.runtime.sendMessage(message)
+  return { ...article, markdownContent }
 }
 
-export {}
+function handlePopupOpen(message: Message<string>, sender, sendResponse) {
+  if (message.target === "content" && message.payload === "popup opened") {
+    sendResponse(notifyExtension())
+  }
+}
 
 window.addEventListener("load", () => {
-  notifyExtension()
+  chrome.runtime?.onMessage.addListener(handlePopupOpen)
 })
 
 function getArticle(dom: Document): Article {

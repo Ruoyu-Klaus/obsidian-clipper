@@ -24,20 +24,23 @@ function IndexPopup() {
   const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
 
   useEffect(() => {
-    const parsedContentListener = (message: Message<Article>) => {
-      const { target, payload } = message
-      if (target === "popup") {
-        setParsedContent(payload)
-        setArticle("# " + payload.title + "\n" + payload.markdownContent)
-      }
-    }
-    if (chrome) {
+    const notifyContent = async () => {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        lastFocusedWindow: true
+      })
       const message: Message<string> = {
-        target: "background",
+        target: "content",
         payload: "popup opened"
       }
-      chrome.runtime.sendMessage(message)
-      chrome.runtime.onMessage.addListener(parsedContentListener)
+      const response: Article = await chrome.tabs.sendMessage(tab.id, message)
+      if (!response) return
+      setParsedContent(response)
+      setArticle("# " + response.title + "\n" + response.markdownContent)
+    }
+
+    if (chrome) {
+      notifyContent()
     }
   }, [])
 
