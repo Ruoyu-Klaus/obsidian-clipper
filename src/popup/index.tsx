@@ -12,10 +12,16 @@ import IconButton from "~components/IconButton"
 import MultiDropDown from "~components/MultiDropDown"
 import GearIcon from "~icons/Gear"
 
+const vaultFolderOptions = [
+  { displayName: "/", folder: "default" },
+  { displayName: "/resource", folder: "resource" }
+]
+
 function IndexPopup() {
   const [content, setParsedContent] = useState<Article>()
   const [article, setArticle] = useState<string>()
   const [showCopied, setShowCopied] = useState(false)
+  const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
 
   useEffect(() => {
     const parsedContentListener = (message: Message<Article>) => {
@@ -41,12 +47,24 @@ function IndexPopup() {
   }
 
   const copyToObsidian = () => {
-    document.location.href =
-      "obsidian://new?" +
-      "file=" +
-      encodeURIComponent(" " + content.title) +
-      "&content=" +
-      encodeURIComponent(article)
+    const getFileName = (title) => {
+      return title.replace(":", "").replace(/\//g, "-").replace(/\\/g, "-")
+    }
+
+    const assembleURL = () => {
+      let filePath = "name=" + encodeURIComponent(getFileName(content.title))
+      if (selectedFolder.folder !== "default") {
+        filePath =
+          "file=" +
+          encodeURIComponent(
+            selectedFolder.folder + "/" + getFileName(content.title)
+          )
+      }
+      return (
+        "obsidian://new?" + filePath + "&content=" + encodeURIComponent(article)
+      )
+    }
+    document.location.href = assembleURL()
   }
 
   useEffect(() => {
@@ -59,6 +77,7 @@ function IndexPopup() {
 
   return (
     <div
+      id={"root"}
       className="container flex flex-col p-3 border border-gray-600 bg-darkBlue "
       style={{ width: 400, height: 600 }}>
       <div className="flex items-center justify-between p-1 py-2 border-b dark:border-gray-600">
@@ -72,13 +91,19 @@ function IndexPopup() {
         </div>
         <div className="flex gap-2">
           <button
+            onClick={() => {
+              // go to option page
+              chrome.runtime.openOptionsPage()
+              window.close()
+            }}
             type="button"
-            className="p-1 rounded cursor-pointer sm:ml-auto text-gray-400 hover:text-white hover:bg-gray-600">
+            className="p-1 rounded cursor-pointer sm:ml-auto text-gray-400 hover:text-white hover:bg-blue-800 focus:ring-blue-900">
             <GearIcon />
           </button>
           <button
+            onClick={() => window.close()}
             type="button"
-            className="p-1 rounded cursor-pointer sm:ml-auto text-gray-400 hover:text-white hover:bg-gray-600">
+            className="p-1 rounded cursor-pointer sm:ml-auto text-gray-400 hover:text-white hover:bg-blue-800 focus:ring-blue-900">
             <CloseIcon />
           </button>
         </div>
@@ -87,19 +112,12 @@ function IndexPopup() {
       <div className="flex flex-col w-full h-full mt-3 pb-2 ">
         <div className="flex flex-row mb-4 justify-between ">
           <div>
-            <MultiDropDown />
-            {/* <input
-              className="mr-4 p-1 shadow-lg"
-              style={{ width: 160, height: 36 }}
-              type="text"
-              placeholder="Vault Folder eg. /resource"
+            <MultiDropDown
+              values={vaultFolderOptions}
+              onItemClick={(item) => {
+                setSelectedFolder(item)
+              }}
             />
-            <input
-              className="p-1 shadow-lg"
-              style={{ width: 160, height: 36 }}
-              type="text"
-              placeholder="Tags eg. #web"
-            /> */}
           </div>
           <div className="flex flex-row gap-2 relative">
             <IconButton onClick={copyToClipboard}>

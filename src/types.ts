@@ -14,3 +14,8 @@ export type Message<T> = {
   target: string
   payload: T
 }
+
+export type VaultFolderOption = {
+  displayName: string
+  folder: string
+}

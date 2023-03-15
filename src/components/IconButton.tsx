@@ -5,7 +5,7 @@ function IconButton(props: ButtonHTMLAttributes<HTMLButtonElement>) {
     <button
       type="button"
       style={{ width: 36, height: 36 }}
-      className="bg-darkGrey hover:bg-gray-600 focus:ring-bg-gray-600 focus:ring-offset-grey-200 text-grey-200 w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg relative"
+      className="bg-darkGrey text-grey-200 hover:text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg relative hover:bg-blue-800 focus:ring-blue-900 focus:ring-offset-blue-200"
       {...props}>
       {props.children}
     </button>

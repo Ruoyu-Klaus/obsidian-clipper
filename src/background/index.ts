@@ -20,6 +20,11 @@ if (chrome) {
       chrome.runtime.sendMessage(message)
     }
   }
+
+  chrome.action.onClicked.addListener(async function (tab) {
+    chrome.scripting.executeScript
+  })
+
   chrome.runtime.onMessage.addListener(notify)
   chrome.runtime.onMessage.addListener(sendArticleToPopup.bind(this))
 }
