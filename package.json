@@ -1,7 +1,7 @@
 {
   "name": "obsidian-clipper",
   "displayName": "Obsidian clipper",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Easy to clip web content and paste into your obsidian vault",
   "author": "Ruoyu",
   "scripts": {
@@ -29,12 +29,9 @@
     "typescript": "4.9.4"
   },
   "manifest": {
-    "host_permissions": [
-      "https://*/*"
-    ],
     "permissions": [
       "activeTab",
-      "scripting"
+      "storage"
     ]
   }
 }

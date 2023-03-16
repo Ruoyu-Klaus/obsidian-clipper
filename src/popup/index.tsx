@@ -10,18 +10,27 @@ import "~/style/base.css"
 
 import IconButton from "~components/IconButton"
 import MultiDropDown from "~components/MultiDropDown"
+import { STORAGE_KEY_VAULT_FOLDER } from "~const"
 import GearIcon from "~icons/Gear"
-
-const vaultFolderOptions = [
-  { displayName: "/", folder: "default" },
-  { displayName: "/resource", folder: "resource" }
-]
 
 function IndexPopup() {
   const [content, setParsedContent] = useState<Article>()
   const [article, setArticle] = useState<string>()
   const [showCopied, setShowCopied] = useState(false)
+  const [vaultFolderOptions, setVaultFolderOptions] = useState([
+    { displayName: "/", folder: "default" }
+  ])
   const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
+
+  useEffect(() => {
+    chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
+      const value = result[STORAGE_KEY_VAULT_FOLDER]
+      setVaultFolderOptions((pre) => [
+        ...pre,
+        { displayName: value, folder: value }
+      ])
+    })
+  }, [])
 
   useEffect(() => {
     const notifyContent = async () => {
