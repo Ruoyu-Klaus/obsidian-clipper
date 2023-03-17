@@ -1,3 +1,4 @@
+import MDEditor from "@uiw/react-md-editor"
 import { useEffect, useState } from "react"
 
 // import BoxIn from "~/icons/BoxIn"
@@ -17,6 +18,8 @@ import { usePopupBusiness } from "./usePopupBusiness"
 function IndexPopup() {
   const { content, article, setArticle, vaultFolderOptions } =
     usePopupBusiness()
+
+  const [editorMode, setEditorMode] = useState<"edit" | "preview">("edit")
 
   const [showCopied, setShowCopied] = useState(false)
   const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
@@ -110,12 +113,26 @@ function IndexPopup() {
           </div>
         </div>
 
-        <div className="h-full py-2  bg-darkGrey rounded-lg">
-          <textarea
+        <div
+          className="h-full py-2  bg-darkGrey rounded-lg"
+          onDoubleClick={() => setEditorMode("edit")}
+          onBlur={() => setEditorMode("preview")}>
+          <MDEditor
+            autoFocus
+            style={{ background: "#212936", boxShadow: "none" }}
+            height={420}
+            value={article}
+            onChange={setArticle}
+            preview={editorMode}
+            visibleDragbar={false}
+            previewOptions={{ style: { background: "#212936" } }}
+            hideToolbar
+          />
+          {/* <textarea
             className=" px-2 h-full resize-none w-full text-sm text-gray-300 bg-darkGrey  focus:ring-0 focus:border-0 outline-none overflow-auto"
             value={article}
             spellCheck={false}
-            onChange={(e) => setArticle(e.target.value)}></textarea>
+            onChange={(e) => setArticle(e.target.value)}></textarea> */}
         </div>
       </div>
     </div>
