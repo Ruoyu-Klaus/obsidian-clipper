@@ -13,10 +13,12 @@ export const usePopupBusiness = () => {
   useEffect(() => {
     chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
       const value = result[STORAGE_KEY_VAULT_FOLDER]
-      setVaultFolderOptions((pre) => [
-        ...pre,
-        { displayName: value, folder: value }
-      ])
+      if (value) {
+        setVaultFolderOptions((pre) => [
+          ...pre,
+          { displayName: value, folder: value }
+        ])
+      }
     })
   }, [])
 

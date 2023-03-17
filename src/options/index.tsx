@@ -37,7 +37,7 @@ function index() {
   }
 
   const invalidInputStyle =
-    "mt-2 rounded-lg border-transparent flex-1 appearance-none w-full py-2 px-4 shadow-sm text-base focus:outline-none focus:border-transparent border focus:ring-red-500 bg-red-50 focus:border-red-500 block w-full text-red-500 placeholder-red-500 border-red-500"
+    "mt-2 rounded-lg border-transparent flex-1 appearance-none w-full py-2 px-4 shadow-sm text-base focus:outline-none border focus:ring-red-500 bg-red-50 focus:border-red-500 block text-red-500 placeholder-red-500 border-red-500"
 
   return (
     <>
@@ -55,21 +55,21 @@ function index() {
                 </span>
               </div>
             </div>
-            <div className="mt-6 h-full flex-1">
+            <div className="mt-6 w-full h-full flex-1">
               <div className="w-full h-4/5 ">
                 <div className="w-full h-4/5">
-                  <div className=" relative">
+                  <div className="relative">
                     <label
-                      className="text-black text-lg border-b"
+                      className="text-black text-lg"
                       htmlFor="target-folder">
-                      Target Vault Folder (eg. resources/)
+                      Vault Folder
                     </label>
                     <input
                       type="text"
                       id="target-folder"
                       className={
                         isValidFolderFormat
-                          ? "mt-2 rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                          ? "mt-2 rounded-lg border-purple-300  flex-1 appearance-none  w-full py-2 px-4 shadow-sm text-base focus:outline-none focus:border-transparent border focus:ring-2 bg-white focus:ring-purple-600 text-gray-700 placeholder-gray-400 border-gray-300"
                           : invalidInputStyle
                       }
                       placeholder="Target Folder"
@@ -82,7 +82,13 @@ function index() {
                         path invalid.
                       </p>
                     )}
+                    <p className="mt-2 text-sm text-gray-400">
+                      You can select another target vault folder(except default
+                      one) on extension panel. It should be in format like
+                      "xx/xx/"
+                    </p>
                   </div>
+                  <div className="my-3 w-full border-t border-gray-300"></div>
                 </div>
 
                 <div className="flex flex-col gap-2 relative">
