@@ -14,7 +14,7 @@ function index() {
 
   useEffect(() => {
     chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
-      setPreFolderValue(result[STORAGE_KEY_VAULT_FOLDER])
+      setPreFolderValue(result[STORAGE_KEY_VAULT_FOLDER] || "")
     })
   }, [])
 
@@ -62,7 +62,7 @@ function index() {
                     <label
                       className="text-black text-lg"
                       htmlFor="target-folder">
-                      Vault Folder
+                      Extra Vault Folder
                     </label>
                     <input
                       type="text"
