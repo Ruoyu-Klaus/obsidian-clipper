@@ -3,7 +3,7 @@ import Turndown from "turndown"
 
 import type { Article, Message } from "~types"
 
-function notifyExtension() {
+function parse2MD() {
   const content = document.documentElement.outerHTML
   const parser = new DOMParser()
   const dom = parser.parseFromString(content, "text/html")
@@ -17,7 +17,7 @@ function notifyExtension() {
 
 function handlePopupOpen(message: Message<string>, sender, sendResponse) {
   if (message.target === "content" && message.payload === "popup opened") {
-    sendResponse(notifyExtension())
+    sendResponse(parse2MD())
   }
 }
 

@@ -3,65 +3,28 @@ import { useEffect, useState } from "react"
 // import BoxIn from "~/icons/BoxIn"
 import CopyIcon from "~/icons/Copy"
 import CloseIcon from "~icons/Close"
+import GearIcon from "~icons/Gear"
 import ObsidianIcon from "~icons/Obsidian"
-import type { Article, Message } from "~types"
 
 import "~/style/base.css"
 
 import IconButton from "~components/IconButton"
 import MultiDropDown from "~components/MultiDropDown"
-import { STORAGE_KEY_VAULT_FOLDER } from "~const"
-import GearIcon from "~icons/Gear"
+import { getFileName } from "~utils"
+
+import { usePopupBusiness } from "./usePopupBusiness"
 
 function IndexPopup() {
-  const [content, setParsedContent] = useState<Article>()
-  const [article, setArticle] = useState<string>()
+  const { content, article, setArticle, vaultFolderOptions } =
+    usePopupBusiness()
+
   const [showCopied, setShowCopied] = useState(false)
-  const [vaultFolderOptions, setVaultFolderOptions] = useState([
-    { displayName: "/", folder: "default" }
-  ])
   const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
 
-  useEffect(() => {
-    chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
-      const value = result[STORAGE_KEY_VAULT_FOLDER]
-      setVaultFolderOptions((pre) => [
-        ...pre,
-        { displayName: value, folder: value }
-      ])
-    })
-  }, [])
-
-  useEffect(() => {
-    const notifyContent = async () => {
-      try {
-        const [tab] = await chrome.tabs.query({
-          active: true,
-          lastFocusedWindow: true,
-          status: "complete"
-        })
-        if (!tab) {
-          notifyContent()
-          return
-        }
-
-        const message: Message<string> = {
-          target: "content",
-          payload: "popup opened"
-        }
-        const response: Article = await chrome.tabs.sendMessage(tab.id, message)
-        if (!response) return
-        setParsedContent(response)
-        setArticle("# " + response.title + "\n" + response.markdownContent)
-      } catch (error) {
-        setArticle("⚠ Something wrong, please try again!")
-      }
-    }
-
-    if (chrome) {
-      notifyContent()
-    }
-  }, [])
+  const goOptionPage = () => {
+    chrome.runtime.openOptionsPage()
+    window.close()
+  }
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(article)
@@ -69,18 +32,12 @@ function IndexPopup() {
   }
 
   const copyToObsidian = () => {
-    const getFileName = (title) => {
-      return title.replace(":", "").replace(/\//g, "-").replace(/\\/g, "-")
-    }
-
+    const fileName = getFileName(content.title)
     const assembleURL = () => {
-      let filePath = "name=" + encodeURIComponent(getFileName(content.title))
+      let filePath = "name=" + encodeURIComponent(fileName)
       if (selectedFolder.folder !== "default") {
         filePath =
-          "file=" +
-          encodeURIComponent(
-            selectedFolder.folder + "/" + getFileName(content.title)
-          )
+          "file=" + encodeURIComponent(selectedFolder.folder + fileName)
       }
       return (
         "obsidian://new?" + filePath + "&content=" + encodeURIComponent(article)
@@ -113,11 +70,7 @@ function IndexPopup() {
         </div>
         <div className="flex gap-2">
           <button
-            onClick={() => {
-              // go to option page
-              chrome.runtime.openOptionsPage()
-              window.close()
-            }}
+            onClick={goOptionPage}
             type="button"
             className="p-1 rounded cursor-pointer sm:ml-auto text-gray-400 hover:text-white hover:bg-blue-800 focus:ring-blue-900">
             <GearIcon />
