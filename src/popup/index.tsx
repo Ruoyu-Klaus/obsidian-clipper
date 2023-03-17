@@ -34,18 +34,28 @@ function IndexPopup() {
 
   useEffect(() => {
     const notifyContent = async () => {
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        lastFocusedWindow: true
-      })
-      const message: Message<string> = {
-        target: "content",
-        payload: "popup opened"
+      try {
+        const [tab] = await chrome.tabs.query({
+          active: true,
+          lastFocusedWindow: true,
+          status: "complete"
+        })
+        if (!tab) {
+          notifyContent()
+          return
+        }
+
+        const message: Message<string> = {
+          target: "content",
+          payload: "popup opened"
+        }
+        const response: Article = await chrome.tabs.sendMessage(tab.id, message)
+        if (!response) return
+        setParsedContent(response)
+        setArticle("# " + response.title + "\n" + response.markdownContent)
+      } catch (error) {
+        setArticle("⚠ Something wrong, please try again!")
       }
-      const response: Article = await chrome.tabs.sendMessage(tab.id, message)
-      if (!response) return
-      setParsedContent(response)
-      setArticle("# " + response.title + "\n" + response.markdownContent)
     }
 
     if (chrome) {
