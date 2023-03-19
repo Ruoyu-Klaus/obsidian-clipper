@@ -1,12 +1,15 @@
 import { Readability } from "@mozilla/readability"
+import * as DOMPurify from "dompurify"
 import Turndown from "turndown"
 
 import type { Article, Message } from "~types"
 
 function parse2MD() {
-  const content = document.documentElement.outerHTML
+  const content = DOMPurify(document.documentElement.outerHTML)
   const parser = new DOMParser()
-  const dom = parser.parseFromString(content, "text/html")
+  const dom = parser
+    .parseFromString(content, "text/html")
+    .cloneNode(true) as Document
   const article = getArticle(dom)
   if (!article || !chrome) return
 

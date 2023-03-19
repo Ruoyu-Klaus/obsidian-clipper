@@ -9,6 +9,7 @@ specifiers:
   '@types/react-dom': 18.0.10
   '@uiw/react-md-editor': ^3.20.5
   autoprefixer: ^10.4.14
+  dompurify: ^3.0.1
   plasmo: 0.67.1
   postcss: ^8.4.21
   prettier: 2.8.3
@@ -21,6 +22,7 @@ specifiers:
 dependencies:
   '@mozilla/readability': 0.4.2
   '@uiw/react-md-editor': 3.20.5_5ndqzdd6t4rivxsukjv3i3ak2q
+  dompurify: 3.0.1
   plasmo: 0.67.1_gjpyg5imi5mt2gbvkmn3a4dr7m
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
@@ -2915,6 +2917,10 @@ packages:
 
   /domino/2.1.6:
     resolution: {integrity: sha512-3VdM/SXBZX2omc9JF9nOPCtDaYQ67BGp5CoLpIQlO2KCAPETs8TcDHacF26jXadGbvUteZzRTeos2fhID5+ucQ==}
+    dev: false
+
+  /dompurify/3.0.1:
+    resolution: {integrity: sha512-60tsgvPKwItxZZdfLmamp0MTcecCta3avOhsLgPZ0qcWt96OasFfhkeIRbJ6br5i0fQawT1/RBGB5L58/Jpwuw==}
     dev: false
 
   /domutils/2.8.0:

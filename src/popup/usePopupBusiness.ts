@@ -42,7 +42,7 @@ export const usePopupBusiness = () => {
         const response: Article = await chrome.tabs.sendMessage(tab.id, message)
         if (!response) return
         setParsedContent(response)
-        setArticle("# " + response.title + "\n" + response.markdownContent)
+        setArticle("# " + response.title + "\n\n" + response.markdownContent)
       } catch (error) {
         setArticle("⚠ Something wrong, please try again!")
       }
@@ -51,6 +51,7 @@ export const usePopupBusiness = () => {
     if (chrome) {
       notifyContent()
     }
+    document.documentElement.setAttribute("data-color-mode", "dark")
   }, [])
 
   return {
