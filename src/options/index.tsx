@@ -6,11 +6,15 @@ import logoImage from "data-base64:~assets/logo.png"
 
 import { STORAGE_KEY_VAULT_FOLDER } from "~const"
 
+const defaultFormatContent =
+  "---\ntitle:{{title}}\nlink:{{link}}\ndate:{{date}}\n---\n{{content}}\n"
+
 function index() {
   const [showSaved, setShowSaved] = useState(false)
   const folderInput = useRef<HTMLInputElement>(null)
   const [preFolderValue, setPreFolderValue] = useState("")
   const [isValidFolderFormat, setValidFolderFormat] = useState(true)
+  const [formatContent, setFormatContent] = useState(defaultFormatContent)
 
   useEffect(() => {
     chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
@@ -60,8 +64,8 @@ function index() {
             </div>
 
             <div className="mt-6 w-full h-full flex-1">
-              <div className="w-full h-4/5 ">
-                <div className="w-full h-4/5">
+              <div className="w-full h-full flex flex-col">
+                <div className="w-full flex-1">
                   <div className="relative">
                     <label
                       className="text-black text-lg"
@@ -93,6 +97,24 @@ function index() {
                     </p>
                   </div>
                   <div className="my-3 w-full border-t border-gray-300"></div>
+                  <div className="relative">
+                    <label
+                      className="text-black text-lg"
+                      htmlFor="content-format">
+                      Clipping Format
+                    </label>
+                    <textarea
+                      className="mt-2 px-2 h-24 resize-none w-full text-sm text-gray-700 bg-white rounded-lg border border-purple-300  focus:ring-2 focus:ring-purple-600 outline-none overflow-auto"
+                      value={formatContent}
+                      onChange={(e) => setFormatContent(e.target.value)}
+                      spellCheck={false}></textarea>
+                    <p className="mt-2 text-sm text-gray-400">
+                      You can specify the clipping template using placeholders
+                      like {`{{title}}`}, {`{{content}}`}, {`{{date}}`},{" "}
+                      {`{{link}}`}.
+                    </p>
+                  </div>
+                  <div className="my-3 w-full border-t border-gray-300"></div>
                 </div>
 
                 <div className="flex flex-col gap-2 relative">
@@ -100,15 +122,10 @@ function index() {
                     <button
                       onClick={handleSaveOptions}
                       type="button"
-                      className="py-2 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-                      Save Changes
+                      className="py-2 px-4  bg-purple-600 hover:bg-purple-700 focus:ring-purple-500 focus:ring-offset-purple-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
+                      {showSaved ? "Changes saved" : "Save Changes"}
                     </button>
                   </span>
-                  {showSaved && (
-                    <p className="text-ms text-gray-700 text-center">
-                      Changes saved
-                    </p>
-                  )}
                 </div>
               </div>
             </div>
