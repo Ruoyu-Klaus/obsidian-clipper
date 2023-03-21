@@ -5,7 +5,7 @@ import Turndown from "turndown"
 import type { Article, Message } from "~types"
 
 function parse2MD() {
-  const content = DOMPurify(document.documentElement.outerHTML)
+  const content = DOMPurify.sanitize(document.documentElement.outerHTML)
   const parser = new DOMParser()
   const dom = parser
     .parseFromString(content, "text/html")
