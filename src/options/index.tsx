@@ -44,17 +44,21 @@ function index() {
       <div className="h-screen flex flex-col gap-2 justify-center items-center">
         <div className="flex-1 h-auto rounded-lg sm:max-w-md sm:w-full sm:mx-auto sm:overflow-hidden">
           <div className="px-4 py-8 h-full flex flex-col justify-center items-center">
-            <img src={logoImage} alt="logoImage" width="60%" />
+            <img src={logoImage} alt="logoImage" width="50%" />
             <div className="relative mt-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm leading-5">
-                <span className="px-2 text-gray-500 bg-white">
+              <div className="relative flex flex-col justify-center text-sm leading-5">
+                <p className="px-2 text-gray-500 bg-white text-center">
                   Obsidian Clipper Options
-                </span>
+                </p>
+                <p>
+                  Welcome to Obsidian Clipper, a browser plugin that makes it
+                  easy to clip web content and paste it into your Obsidian vault
+                  by clicking the buttons on the popup! The copied images will
+                  be embedded as external references.
+                </p>
               </div>
             </div>
+
             <div className="mt-6 w-full h-full flex-1">
               <div className="w-full h-4/5 ">
                 <div className="w-full h-4/5">
