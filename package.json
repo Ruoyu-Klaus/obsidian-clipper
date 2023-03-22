@@ -12,6 +12,7 @@
   "dependencies": {
     "@mozilla/readability": "^0.4.2",
     "@uiw/react-md-editor": "^3.20.5",
+    "dayjs": "^1.11.7",
     "dompurify": "^3.0.1",
     "plasmo": "0.67.1",
     "react": "18.2.0",

@@ -15,7 +15,7 @@ function parse2MD() {
 
   const markdownContent = getMarkDown(article)
 
-  return { ...article, markdownContent }
+  return { ...article, link: document.URL, markdownContent }
 }
 
 function handlePopupOpen(message: Message<string>, sender, sendResponse) {

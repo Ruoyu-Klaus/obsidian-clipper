@@ -1,7 +1,27 @@
+import dayjs from "dayjs"
 import { useEffect, useState } from "react"
 
-import { STORAGE_KEY_VAULT_FOLDER } from "~const"
+import {
+  STORAGE_KEY_CLIPPING_FORMAT,
+  STORAGE_KEY_DATE_FORMAT,
+  STORAGE_KEY_VAULT_FOLDER
+} from "~const"
 import type { Article, Message } from "~types"
+
+const getUserFormatTemplate = async () => {
+  const result = await chrome.storage.sync.get([STORAGE_KEY_CLIPPING_FORMAT])
+  return result[STORAGE_KEY_CLIPPING_FORMAT]
+}
+
+const getUserPreferFolder = async () => {
+  const result = await chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER])
+  return result[STORAGE_KEY_VAULT_FOLDER]
+}
+
+const getUserDateFormat = async () => {
+  const result = await chrome.storage.sync.get([STORAGE_KEY_DATE_FORMAT])
+  return result[STORAGE_KEY_DATE_FORMAT]
+}
 
 export const usePopupBusiness = () => {
   const [content, setParsedContent] = useState<Article>()
@@ -9,18 +29,7 @@ export const usePopupBusiness = () => {
   const [vaultFolderOptions, setVaultFolderOptions] = useState([
     { displayName: "/", folder: "default" }
   ])
-
-  useEffect(() => {
-    chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
-      const value = result[STORAGE_KEY_VAULT_FOLDER]
-      if (value) {
-        setVaultFolderOptions((pre) => [
-          ...pre,
-          { displayName: value, folder: value }
-        ])
-      }
-    })
-  }, [])
+  const [formatTemplate, setFormatTemplate] = useState("")
 
   useEffect(() => {
     const notifyContent = async () => {
@@ -35,6 +44,12 @@ export const usePopupBusiness = () => {
           return
         }
 
+        const extraFolder = await getUserPreferFolder()
+        setVaultFolderOptions((pre) => [
+          ...pre,
+          { displayName: extraFolder, folder: extraFolder }
+        ])
+
         const message: Message<string> = {
           target: "content",
           payload: "popup opened"
@@ -42,7 +57,16 @@ export const usePopupBusiness = () => {
         const response: Article = await chrome.tabs.sendMessage(tab.id, message)
         if (!response) return
         setParsedContent(response)
-        setArticle("# " + response.title + "\n\n" + response.markdownContent)
+
+        let article = await getUserFormatTemplate()
+        const dateFormat = await getUserDateFormat()
+
+        article = article.replace(/{{title}}/g, response.title)
+        article = article.replace(/{{content}}/g, response.markdownContent)
+        article = article.replace(/{{link}}/g, response.link)
+        article = article.replace(/{{date}}/g, dayjs().format(dateFormat))
+
+        setArticle(article)
       } catch (error) {
         setArticle("⚠ Something wrong, please try again!")
       }
@@ -58,6 +82,7 @@ export const usePopupBusiness = () => {
     content,
     article,
     setArticle,
-    vaultFolderOptions
+    vaultFolderOptions,
+    formatTemplate
   }
 }

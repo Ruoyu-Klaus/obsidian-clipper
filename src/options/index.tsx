@@ -3,34 +3,75 @@ import React, { useEffect, useRef, useState } from "react"
 import "~/style/base.css"
 
 import logoImage from "data-base64:~assets/logo.png"
+import dayjs from "dayjs"
 
-import { STORAGE_KEY_VAULT_FOLDER } from "~const"
+import {
+  STORAGE_KEY_CLIPPING_FORMAT,
+  STORAGE_KEY_DATE_FORMAT,
+  STORAGE_KEY_VAULT_FOLDER
+} from "~const"
 
 const defaultFormatContent =
-  "---\ntitle:{{title}}\nlink:{{link}}\ndate:{{date}}\n---\n{{content}}\n"
+  "---\ntitle: {{title}}\nlink: {{link}}\ndate: {{date}}\n---\n\n{{content}}\n"
+const defaultDateFormat = "YYYY-MM-DD"
 
 function index() {
   const [showSaved, setShowSaved] = useState(false)
-  const folderInput = useRef<HTMLInputElement>(null)
-  const [preFolderValue, setPreFolderValue] = useState("")
+  const folderInputRef = useRef<HTMLInputElement>(null)
+  const formatTextAreaRef = useRef<HTMLTextAreaElement>(null)
+  const dateFormatInputRef = useRef<HTMLInputElement>(null)
+
   const [isValidFolderFormat, setValidFolderFormat] = useState(true)
-  const [formatContent, setFormatContent] = useState(defaultFormatContent)
 
   useEffect(() => {
-    chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER]).then((result) => {
-      setPreFolderValue(result[STORAGE_KEY_VAULT_FOLDER] || "")
-    })
+    chrome.storage.sync
+      .get([
+        STORAGE_KEY_VAULT_FOLDER,
+        STORAGE_KEY_CLIPPING_FORMAT,
+        STORAGE_KEY_DATE_FORMAT
+      ])
+      .then((result) => {
+        if (result[STORAGE_KEY_VAULT_FOLDER]) {
+          folderInputRef.current.value = result[STORAGE_KEY_VAULT_FOLDER]
+        } else {
+          chrome.storage.sync.set({ [STORAGE_KEY_VAULT_FOLDER]: "" })
+        }
+
+        if (result[STORAGE_KEY_CLIPPING_FORMAT]) {
+          formatTextAreaRef.current.value = result[STORAGE_KEY_CLIPPING_FORMAT]
+        } else {
+          chrome.storage.sync.set({
+            [STORAGE_KEY_CLIPPING_FORMAT]: defaultFormatContent
+          })
+        }
+
+        if (result[STORAGE_KEY_DATE_FORMAT]) {
+          dateFormatInputRef.current.value = result[STORAGE_KEY_DATE_FORMAT]
+        } else {
+          chrome.storage.sync.set({
+            [STORAGE_KEY_DATE_FORMAT]: defaultDateFormat
+          })
+        }
+      })
   }, [])
+  console.log(dateFormatInputRef.current && dateFormatInputRef.current.value)
 
   const handleSaveOptions = async () => {
-    const folderValue = folderInput.current.value
+    const folderValue = folderInputRef.current.value
+    const formatContent = formatTextAreaRef.current.value
+    const dateFormat = dateFormatInputRef.current.value
+
     const regExp = /^[\w+\/]+\/$/
     if (!regExp.test(folderValue)) {
       setValidFolderFormat(false)
       return
     }
 
-    await chrome.storage.sync.set({ [STORAGE_KEY_VAULT_FOLDER]: folderValue })
+    await chrome.storage.sync.set({
+      [STORAGE_KEY_VAULT_FOLDER]: folderValue,
+      [STORAGE_KEY_CLIPPING_FORMAT]: formatContent,
+      [STORAGE_KEY_DATE_FORMAT]: dateFormat
+    })
 
     setValidFolderFormat(true)
     setShowSaved(true)
@@ -45,7 +86,7 @@ function index() {
 
   return (
     <>
-      <div className="h-screen flex flex-col gap-2 justify-center items-center">
+      <div className="h-full flex flex-col gap-2 justify-center items-center">
         <div className="flex-1 h-auto rounded-lg sm:max-w-md sm:w-full sm:mx-auto sm:overflow-hidden">
           <div className="px-4 py-8 h-full flex flex-col justify-center items-center">
             <img src={logoImage} alt="logoImage" width="50%" />
@@ -64,7 +105,7 @@ function index() {
             </div>
 
             <div className="mt-6 w-full h-full flex-1">
-              <div className="w-full h-full flex flex-col">
+              <div className="w-full h-full flex flex-col gap-8">
                 <div className="w-full flex-1">
                   <div className="relative">
                     <label
@@ -81,8 +122,9 @@ function index() {
                           : invalidInputStyle
                       }
                       placeholder="Target Folder"
-                      defaultValue={preFolderValue}
-                      ref={folderInput}
+                      defaultValue={""}
+                      ref={folderInputRef}
+                      spellCheck={false}
                     />
                     {isValidFolderFormat || (
                       <p className="mt-2 text-sm text-red-600 dark:text-red-500">
@@ -104,9 +146,9 @@ function index() {
                       Clipping Format
                     </label>
                     <textarea
+                      ref={formatTextAreaRef}
                       className="mt-2 px-2 h-24 resize-none w-full text-sm text-gray-700 bg-white rounded-lg border border-purple-300  focus:ring-2 focus:ring-purple-600 outline-none overflow-auto"
-                      value={formatContent}
-                      onChange={(e) => setFormatContent(e.target.value)}
+                      defaultValue={defaultFormatContent}
                       spellCheck={false}></textarea>
                     <p className="mt-2 text-sm text-gray-400">
                       You can specify the clipping template using placeholders
@@ -115,9 +157,34 @@ function index() {
                     </p>
                   </div>
                   <div className="my-3 w-full border-t border-gray-300"></div>
+                  <div className="relative">
+                    <label className="text-black text-lg" htmlFor="date-format">
+                      Date Format
+                    </label>
+                    <input
+                      type="text"
+                      id="date-format"
+                      className="mt-2 rounded-lg border-purple-300  flex-1 appearance-none  w-full py-2 px-4 shadow-sm text-base focus:outline-none focus:border-transparent border focus:ring-2 bg-white focus:ring-purple-600 text-gray-700 placeholder-gray-400 border-gray-300"
+                      placeholder="Date format like 'YYYY-MM-DD'"
+                      defaultValue={defaultDateFormat}
+                      ref={dateFormatInputRef}
+                      spellCheck={false}
+                    />
+
+                    <p className="mt-2 text-sm text-gray-400">
+                      You can parse the date in a given format, it should look
+                      like "YYYY-DD-MM".{" "}
+                      <a
+                        className="underline"
+                        target="_blank"
+                        href="https://day.js.org/docs/en/parse/string-format#list-of-all-available-parsing-tokens">
+                        Click to check what available parsing tokens.
+                      </a>
+                    </p>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-2 relative">
+                <div className="relative">
                   <span className="block w-full rounded-md shadow-sm">
                     <button
                       onClick={handleSaveOptions}
