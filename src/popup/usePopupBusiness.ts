@@ -7,21 +7,7 @@ import {
   STORAGE_KEY_VAULT_FOLDER
 } from "~const"
 import type { Article, Message } from "~types"
-
-const getUserFormatTemplate = async () => {
-  const result = await chrome.storage.sync.get([STORAGE_KEY_CLIPPING_FORMAT])
-  return result[STORAGE_KEY_CLIPPING_FORMAT]
-}
-
-const getUserPreferFolder = async () => {
-  const result = await chrome.storage.sync.get([STORAGE_KEY_VAULT_FOLDER])
-  return result[STORAGE_KEY_VAULT_FOLDER]
-}
-
-const getUserDateFormat = async () => {
-  const result = await chrome.storage.sync.get([STORAGE_KEY_DATE_FORMAT])
-  return result[STORAGE_KEY_DATE_FORMAT]
-}
+import { getFileName, getUserStoreValueByKey } from "~utils"
 
 export const usePopupBusiness = () => {
   const [content, setParsedContent] = useState<Article>()
@@ -29,7 +15,6 @@ export const usePopupBusiness = () => {
   const [vaultFolderOptions, setVaultFolderOptions] = useState([
     { displayName: "/", folder: "default" }
   ])
-  const [formatTemplate, setFormatTemplate] = useState("")
 
   useEffect(() => {
     const notifyContent = async () => {
@@ -44,11 +29,15 @@ export const usePopupBusiness = () => {
           return
         }
 
-        const extraFolder = await getUserPreferFolder()
-        setVaultFolderOptions((pre) => [
-          ...pre,
-          { displayName: extraFolder, folder: extraFolder }
-        ])
+        const extraFolder = await getUserStoreValueByKey(
+          STORAGE_KEY_VAULT_FOLDER
+        )
+        if (extraFolder) {
+          setVaultFolderOptions((pre) => [
+            ...pre,
+            { displayName: extraFolder, folder: extraFolder }
+          ])
+        }
 
         const message: Message<string> = {
           target: "content",
@@ -58,8 +47,8 @@ export const usePopupBusiness = () => {
         if (!response) return
         setParsedContent(response)
 
-        let article = await getUserFormatTemplate()
-        const dateFormat = await getUserDateFormat()
+        let article = await getUserStoreValueByKey(STORAGE_KEY_CLIPPING_FORMAT)
+        const dateFormat = await getUserStoreValueByKey(STORAGE_KEY_DATE_FORMAT)
 
         article = article.replace(/{{title}}/g, response.title)
         article = article.replace(/{{content}}/g, response.markdownContent)
@@ -78,11 +67,19 @@ export const usePopupBusiness = () => {
     document.documentElement.setAttribute("data-color-mode", "dark")
   }, [])
 
+  const assembleURL = (folderName) => {
+    const fileName = getFileName(content.title)
+    let filePath = "name=" + encodeURIComponent(fileName)
+    if (folderName !== "default") {
+      filePath = "file=" + encodeURIComponent(folderName + fileName)
+    }
+    return `obsidian://new?${filePath}&content=${encodeURIComponent(article)}`
+  }
+
   return {
-    content,
     article,
     setArticle,
     vaultFolderOptions,
-    formatTemplate
+    assembleURL
   }
 }

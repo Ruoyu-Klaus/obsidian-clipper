@@ -16,7 +16,7 @@ import { getFileName } from "~utils"
 import { usePopupBusiness } from "./usePopupBusiness"
 
 function IndexPopup() {
-  const { content, article, setArticle, vaultFolderOptions } =
+  const { article, setArticle, vaultFolderOptions, assembleURL } =
     usePopupBusiness()
 
   const [editorMode, setEditorMode] = useState<"edit" | "preview">("edit")
@@ -35,18 +35,7 @@ function IndexPopup() {
   }
 
   const copyToObsidian = () => {
-    const fileName = getFileName(content.title)
-    const assembleURL = () => {
-      let filePath = "name=" + encodeURIComponent(fileName)
-      if (selectedFolder.folder !== "default") {
-        filePath =
-          "file=" + encodeURIComponent(selectedFolder.folder + fileName)
-      }
-      return (
-        "obsidian://new?" + filePath + "&content=" + encodeURIComponent(article)
-      )
-    }
-    document.location.href = assembleURL()
+    document.location.href = assembleURL(selectedFolder.folder)
   }
 
   useEffect(() => {
