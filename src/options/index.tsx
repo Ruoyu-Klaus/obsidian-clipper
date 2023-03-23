@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 import "~/style/base.css"
 
 import logoImage from "data-base64:~assets/logo.png"
-import dayjs from "dayjs"
 
 import {
   STORAGE_KEY_CLIPPING_FORMAT,
@@ -12,7 +11,7 @@ import {
 } from "~const"
 
 const defaultFormatContent =
-  "---\ntitle: {{title}}\nlink: {{link}}\ndate: {{date}}\n---\n\n{{content}}\n"
+  "\ntitle: {{title}}\n\nlink: {{link}}\n\ndate: {{date}}\n\n---\n\n{{content}}\n"
 const defaultDateFormat = "YYYY-MM-DD"
 
 function index() {
@@ -54,7 +53,6 @@ function index() {
         }
       })
   }, [])
-  console.log(dateFormatInputRef.current && dateFormatInputRef.current.value)
 
   const handleSaveOptions = async () => {
     const folderValue = folderInputRef.current.value

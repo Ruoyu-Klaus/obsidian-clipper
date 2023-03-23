@@ -3,6 +3,7 @@ import * as DOMPurify from "dompurify"
 import Turndown from "turndown"
 
 import type { Article, Message } from "~types"
+import { getFirstLineContent } from "~utils"
 
 function parse2MD() {
   const content = DOMPurify.sanitize(document.documentElement.outerHTML)
@@ -14,6 +15,11 @@ function parse2MD() {
   if (!article || !chrome) return
 
   const markdownContent = getMarkDown(article)
+
+  if (!article.title) {
+    const firstLineMatch = getFirstLineContent(markdownContent)
+    article.title = firstLineMatch.replace(/^#+\s/, "")
+  }
 
   return { ...article, link: document.URL, markdownContent }
 }
