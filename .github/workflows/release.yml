@@ -1,0 +1,33 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Install dependencies
+        uses: pnpm/action-setup@v2.2.4
+        with:
+          version: latest
+          run_install: true
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.x'
+          cache: "pnpm"
+        
+      - name: Build
+        run: pnpm build --zip
+
+      - name: Release
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.npm_package_version }}
+          path: build/chrome-mv3-prod.zip
+        
