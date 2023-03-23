@@ -12,8 +12,15 @@ export type Article = {
 }
 
 export type Message<T> = {
-  target: string
+  target: MESSAGE_TARGET
   payload: T
+}
+
+export enum MESSAGE_TARGET {
+  CONTENT,
+  POPUP,
+  BACKGROUND,
+  OPTION
 }
 
 export type VaultFolderOption = {

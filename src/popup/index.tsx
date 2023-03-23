@@ -11,7 +11,6 @@ import "~/style/base.css"
 
 import IconButton from "~components/IconButton"
 import MultiDropDown from "~components/MultiDropDown"
-import { getFileName } from "~utils"
 
 import { usePopupBusiness } from "./usePopupBusiness"
 
@@ -20,7 +19,6 @@ function IndexPopup() {
     usePopupBusiness()
 
   const [editorMode, setEditorMode] = useState<"edit" | "preview">("edit")
-
   const [showCopied, setShowCopied] = useState(false)
   const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
 
@@ -48,7 +46,6 @@ function IndexPopup() {
 
   return (
     <div
-      id={"root"}
       className="container flex flex-col p-3 border border-gray-600 bg-darkBlue "
       style={{ width: 400, height: 600 }}>
       <div className="flex items-center justify-between p-1 py-2 border-b dark:border-gray-600">

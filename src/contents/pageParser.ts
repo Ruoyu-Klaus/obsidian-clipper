@@ -2,7 +2,8 @@ import { Readability } from "@mozilla/readability"
 import * as DOMPurify from "dompurify"
 import Turndown from "turndown"
 
-import type { Article, Message } from "~types"
+import { POPUP_OPEN_EVENT } from "~const"
+import { Article, MESSAGE_TARGET, Message } from "~types"
 import { getFirstLineContent } from "~utils"
 
 function parse2MD() {
@@ -25,7 +26,10 @@ function parse2MD() {
 }
 
 function handlePopupOpen(message: Message<string>, sender, sendResponse) {
-  if (message.target === "content" && message.payload === "popup opened") {
+  if (
+    message.target === MESSAGE_TARGET.CONTENT &&
+    message.payload === POPUP_OPEN_EVENT
+  ) {
     sendResponse(parse2MD())
   }
 }
