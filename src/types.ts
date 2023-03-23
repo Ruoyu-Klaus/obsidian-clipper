@@ -9,6 +9,7 @@ export type Article = {
   siteName: string
   markdownContent?: string
   link?: string
+  date?: string
 }
 
 export type Message<T> = {
