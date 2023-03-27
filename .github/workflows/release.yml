@@ -28,6 +28,5 @@ jobs:
       - name: Release
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.npm_package_version }}
           path: build/chrome-mv3-prod.zip
         
