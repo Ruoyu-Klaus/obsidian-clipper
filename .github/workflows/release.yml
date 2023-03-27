@@ -1,7 +1,9 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - '*'
 
 jobs:
   build:
@@ -38,4 +40,7 @@ jobs:
           files: build/chrome-mv3-prod.zip
           tag_name: ${{ github.ref }}
           name: Release ${{ github.ref }}
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
