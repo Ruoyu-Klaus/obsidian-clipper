@@ -4,12 +4,12 @@ import type { VaultFolderOption } from "~types"
 
 export interface MultiDropdownProps {
   values: VaultFolderOption[]
+  selectedValue: VaultFolderOption
   onItemClick: (item: VaultFolderOption) => void
 }
 
 function MultiDropDown(props: MultiDropdownProps) {
   const [showDropdown, setShowDropdown] = useState(false)
-  const [selectedValue, setSelectedValue] = useState("/")
 
   return (
     <>
@@ -18,7 +18,7 @@ function MultiDropDown(props: MultiDropdownProps) {
           onClick={() => setShowDropdown((pre) => !pre)}
           className="w-40 text-gray-400 hover:text-white focus:outline-none font-medium rounded-lg text-sm px-2.5 py-2.5 text-center inline-flex items-center bg-darkGrey hover:bg-blue-800 focus:ring-blue-900 relative"
           type="button">
-          {selectedValue || "Select a folder"}
+          {props.selectedValue?.displayName || "Select a folder"}
           <svg
             className="w-4 h-4 absolute right-2.5"
             aria-hidden="true"
@@ -49,7 +49,6 @@ function MultiDropDown(props: MultiDropdownProps) {
                     href="#"
                     onClick={() => {
                       setShowDropdown(false)
-                      setSelectedValue(vaultFolderOption.displayName)
                       props.onItemClick(vaultFolderOption)
                     }}
                     className="block px-4 py-2 hover:bg-blue-800 hover:text-white">

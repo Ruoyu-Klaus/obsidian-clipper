@@ -27,4 +27,5 @@ export enum MESSAGE_TARGET {
 export type VaultFolderOption = {
   displayName: string
   folder: string
+  isDefault: boolean
 }

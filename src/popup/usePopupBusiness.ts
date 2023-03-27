@@ -7,15 +7,15 @@ import {
   STORAGE_KEY_DATE_FORMAT,
   STORAGE_KEY_VAULT_FOLDER
 } from "~const"
-import { Article, MESSAGE_TARGET, Message } from "~types"
+import { Article, MESSAGE_TARGET, Message, VaultFolderOption } from "~types"
 import { getFileName, getUserStoreValueByKey } from "~utils"
 
 export const usePopupBusiness = () => {
   const [content, setParsedContent] = useState<Article>()
   const [article, setArticle] = useState<string>()
-  const [vaultFolderOptions, setVaultFolderOptions] = useState([
-    { displayName: "/", folder: "" }
-  ])
+  const [vaultFolderOptions, setVaultFolderOptions] = useState<
+    VaultFolderOption[]
+  >([])
 
   const notifyContent = async () => {
     try {
@@ -53,10 +53,7 @@ export const usePopupBusiness = () => {
   const getExtraFolder = async () => {
     const extraFolder = await getUserStoreValueByKey(STORAGE_KEY_VAULT_FOLDER)
     if (extraFolder) {
-      setVaultFolderOptions((pre) => [
-        ...pre,
-        { displayName: extraFolder, folder: extraFolder }
-      ])
+      setVaultFolderOptions(extraFolder)
     }
   }
 
@@ -71,7 +68,7 @@ export const usePopupBusiness = () => {
   const assembleURL = (folderName: string) => {
     const fileName = getFileName(content.title)
     let filePath
-    if (folderName) {
+    if (folderName !== "/") {
       filePath = "file=" + encodeURIComponent(folderName + fileName)
     } else {
       filePath = "name=" + encodeURIComponent(fileName)

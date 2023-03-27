@@ -4,11 +4,13 @@ import "~/style/base.css"
 
 import logoImage from "data-base64:~assets/logo.png"
 
+import RadioButtons from "~components/RadioButtons"
 import {
   STORAGE_KEY_CLIPPING_FORMAT,
   STORAGE_KEY_DATE_FORMAT,
   STORAGE_KEY_VAULT_FOLDER
 } from "~const"
+import type { VaultFolderOption } from "~types"
 
 const defaultFormatContent =
   "\ntitle: {{title}}\n\nlink: {{link}}\n\ndate: {{date}}\n\n---\n\n{{content}}\n"
@@ -22,6 +24,8 @@ function index() {
 
   const [isValidFolderFormat, setValidFolderFormat] = useState(true)
 
+  const [folderOptions, setFolderOptions] = useState<VaultFolderOption[]>([])
+
   useEffect(() => {
     chrome.storage.sync
       .get([
@@ -30,10 +34,11 @@ function index() {
         STORAGE_KEY_DATE_FORMAT
       ])
       .then((result) => {
-        if (result[STORAGE_KEY_VAULT_FOLDER]) {
-          folderInputRef.current.value = result[STORAGE_KEY_VAULT_FOLDER]
-        } else {
-          chrome.storage.sync.set({ [STORAGE_KEY_VAULT_FOLDER]: "" })
+        if (
+          result[STORAGE_KEY_VAULT_FOLDER] &&
+          result[STORAGE_KEY_VAULT_FOLDER].length
+        ) {
+          setFolderOptions(result[STORAGE_KEY_VAULT_FOLDER])
         }
 
         if (result[STORAGE_KEY_CLIPPING_FORMAT]) {
@@ -79,8 +84,55 @@ function index() {
     }, 2000)
   }
 
+  const handleAddVaultFolder = async () => {
+    const folderValue = folderInputRef.current.value
+    const regExp = /^[\w+\/]+\/$/
+    if (!regExp.test(folderValue)) {
+      setValidFolderFormat(false)
+      return
+    }
+
+    const newFolderOption = {
+      displayName: folderValue,
+      folder: folderValue,
+      isDefault: false
+    }
+
+    await chrome.storage.sync.set({
+      [STORAGE_KEY_VAULT_FOLDER]: [...folderOptions, newFolderOption]
+    })
+
+    setFolderOptions((prev) => {
+      return [...prev, newFolderOption]
+    })
+    folderInputRef.current.value = ""
+    setValidFolderFormat(true)
+  }
+
+  const handleDefaultFolder = async (value: string) => {
+    const result = folderOptions.map((o) => {
+      o.isDefault = false
+      if (o.folder === value) {
+        o.isDefault = true
+      }
+      return o
+    })
+    await chrome.storage.sync.set({
+      [STORAGE_KEY_VAULT_FOLDER]: result
+    })
+    setFolderOptions(result)
+  }
+
+  const handleFolderOptionDelete = async (option: VaultFolderOption) => {
+    const result = folderOptions.filter((o) => o.folder !== option.folder)
+    await chrome.storage.sync.set({
+      [STORAGE_KEY_VAULT_FOLDER]: result
+    })
+    setFolderOptions(result)
+  }
+
   const invalidInputStyle =
-    "mt-2 rounded-lg border-transparent flex-1 appearance-none w-full py-2 px-4 shadow-sm text-base focus:outline-none border focus:ring-red-500 bg-red-50 focus:border-red-500 block text-red-500 placeholder-red-500 border-red-500"
+    "rounded-lg border-transparent flex-1 appearance-none w-full py-2 px-4 shadow-sm text-base focus:outline-none border focus:ring-red-500 bg-red-50 focus:border-red-500 block text-red-500 placeholder-red-500 border-red-500"
 
   return (
     <>
@@ -111,19 +163,30 @@ function index() {
                       htmlFor="target-folder">
                       Extra Vault Folder
                     </label>
-                    <input
-                      type="text"
-                      id="target-folder"
-                      className={
-                        isValidFolderFormat
-                          ? "mt-2 rounded-lg border-purple-300  flex-1 appearance-none  w-full py-2 px-4 shadow-sm text-base focus:outline-none focus:border-transparent border focus:ring-2 bg-white focus:ring-purple-600 text-gray-700 placeholder-gray-400 border-gray-300"
-                          : invalidInputStyle
-                      }
-                      placeholder="Target Folder"
-                      defaultValue={""}
-                      ref={folderInputRef}
-                      spellCheck={false}
-                    />
+                    <div className="flex justify-center gap-2">
+                      <input
+                        type="text"
+                        id="target-folder"
+                        className={
+                          isValidFolderFormat
+                            ? "rounded-lg border-purple-300  flex-1 appearance-none  w-full py-2 px-4 shadow-sm text-base focus:outline-none focus:border-transparent border focus:ring-2 bg-white focus:ring-purple-600 text-gray-700 placeholder-gray-400 border-gray-300"
+                            : invalidInputStyle
+                        }
+                        placeholder="Target Folder"
+                        defaultValue={""}
+                        ref={folderInputRef}
+                        spellCheck={false}
+                      />
+                      <button
+                        disabled={folderOptions.length >= 5}
+                        onClick={handleAddVaultFolder}
+                        className={`cursor-pointer bg-purple-600 hover:bg-purple-700 w-10 h-auto focus:ring-purple-500 focus:ring-offset-purple-200 text-white transition ease-in duration-200 text-center text-sm font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-lg ${
+                          folderOptions.length > 5 &&
+                          "bg-purple-400 cursor-not-allowed hover:bg-purple-400 focus:none"
+                        }`}>
+                        +
+                      </button>
+                    </div>
                     {isValidFolderFormat || (
                       <p className="mt-2 text-sm text-red-600 dark:text-red-500">
                         <span className="font-medium">Oh, snapp!</span> Folder
@@ -136,6 +199,12 @@ function index() {
                       "xx/xx/"
                     </p>
                   </div>
+                  <div className="my-3 w-full border-t border-gray-300"></div>
+                  <RadioButtons
+                    options={folderOptions}
+                    onOptionChange={handleDefaultFolder}
+                    onOptionDelete={handleFolderOptionDelete}
+                  />
                   <div className="my-3 w-full border-t border-gray-300"></div>
                   <div className="relative">
                     <label

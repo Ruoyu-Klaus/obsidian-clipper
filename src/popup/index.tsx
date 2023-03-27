@@ -11,6 +11,7 @@ import "~/style/base.css"
 
 import IconButton from "~components/IconButton"
 import MultiDropDown from "~components/MultiDropDown"
+import type { VaultFolderOption } from "~types"
 
 import { usePopupBusiness } from "./usePopupBusiness"
 
@@ -20,7 +21,14 @@ function IndexPopup() {
 
   const [editorMode, setEditorMode] = useState<"edit" | "preview">("edit")
   const [showCopied, setShowCopied] = useState(false)
-  const [selectedFolder, setSelectedFolder] = useState(vaultFolderOptions[0])
+
+  const [selectedFolder, setSelectedFolder] = useState<VaultFolderOption>()
+
+  useEffect(() => {
+    setSelectedFolder(
+      vaultFolderOptions.find((o) => o.isDefault) || vaultFolderOptions[0]
+    )
+  }, [vaultFolderOptions])
 
   const goOptionPage = () => {
     chrome.runtime.openOptionsPage()
@@ -78,6 +86,7 @@ function IndexPopup() {
           <div>
             <MultiDropDown
               values={vaultFolderOptions}
+              selectedValue={selectedFolder}
               onItemClick={(item) => {
                 setSelectedFolder(item)
               }}
