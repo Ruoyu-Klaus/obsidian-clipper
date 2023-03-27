@@ -25,8 +25,17 @@ jobs:
       - name: Build
         run: pnpm build --zip
 
-      - name: Release
+      - name: Upload_artifact
         uses: actions/upload-artifact@v3
         with:
+          name: obsidian-clipper
           path: build/chrome-mv3-prod.zip
+
+      - name: Release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/chrome-mv3-prod.zip
+          tag_name: ${{ github.ref }}
+          name: Release ${{ github.ref }}
         
