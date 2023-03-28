@@ -26,7 +26,7 @@ function IndexPopup() {
 
   useEffect(() => {
     setSelectedFolder(
-      vaultFolderOptions.find((o) => o.isDefault) || vaultFolderOptions[0]
+      vaultFolderOptions.find(o => o.isDefault) || vaultFolderOptions[0]
     )
   }, [vaultFolderOptions])
 
@@ -87,7 +87,7 @@ function IndexPopup() {
             <MultiDropDown
               values={vaultFolderOptions}
               selectedValue={selectedFolder}
-              onItemClick={(item) => {
+              onItemClick={item => {
                 setSelectedFolder(item)
               }}
             />
