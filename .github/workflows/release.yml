@@ -17,8 +17,7 @@ jobs:
         uses: pnpm/action-setup@v2.2.4
         with:
           version: latest
-          run_install: |
-           args: [--frozen-lockfile]
+          run_install: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
