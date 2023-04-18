@@ -6,7 +6,7 @@
   <a href="https://github.com/Ruoyu-Klaus/obsidian-clipper/releases" target="_blank">
     <img alt="GitHub release (latest SemVer)" src="https://img.shields.io/github/v/release/Ruoyu-Klaus/obsidian-clipper">
   </a>
-  <a href="https://github.com/Ruoyu-Klaus/obsidian-clipper/blob/master/README.md#license" target="_blank">
+  <a href="https://github.com/Ruoyu-Klaus/obsidian-clipper/blob/master/LICENSE" target="_blank">
     <img alt="License" src="https://img.shields.io/github/license/Ruoyu-Klaus/obsidian-clipper">
   </a>
   <a href="https://github.com/Ruoyu-Klaus/obsidian-clipper/actions/workflows/release.yml" target="_blank">
