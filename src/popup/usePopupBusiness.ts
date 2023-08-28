@@ -67,13 +67,8 @@ export const usePopupBusiness = () => {
 
   const assembleURL = (folderName: string) => {
     const fileName = getFileName(content.title)
-    let filePath
-    if (folderName !== "/") {
-      filePath = "file=" + encodeURIComponent(folderName + fileName)
-    } else {
-      filePath = "name=" + encodeURIComponent(fileName)
-    }
-    return `obsidian://new?${filePath}&content=${encodeURIComponent(article)}`
+    const filePath = "name=" + encodeURIComponent(folderName + "/" + fileName)
+    return `obsidian://new?&${filePath}&content=${encodeURIComponent(article)}`
   }
 
   useEffect(() => {

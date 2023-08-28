@@ -33,7 +33,7 @@ function index() {
         STORAGE_KEY_CLIPPING_FORMAT,
         STORAGE_KEY_DATE_FORMAT
       ])
-      .then((result) => {
+      .then(result => {
         if (
           result[STORAGE_KEY_VAULT_FOLDER] &&
           result[STORAGE_KEY_VAULT_FOLDER].length
@@ -64,11 +64,11 @@ function index() {
     const formatContent = formatTextAreaRef.current.value
     const dateFormat = dateFormatInputRef.current.value
 
-    const regExp = /^[\w+\/]+\/$/
-    if (!regExp.test(folderValue)) {
-      setValidFolderFormat(false)
-      return
-    }
+    // const regExp = /^[\w+\/]+\/$/
+    // if (!regExp.test(folderValue)) {
+    //   setValidFolderFormat(false)
+    //   return
+    // }
 
     await chrome.storage.sync.set({
       [STORAGE_KEY_VAULT_FOLDER]: folderValue,
@@ -86,11 +86,12 @@ function index() {
 
   const handleAddVaultFolder = async () => {
     const folderValue = folderInputRef.current.value
+    console.log(folderValue)
     const regExp = /^[\w+\/]+\/$/
-    if (!regExp.test(folderValue)) {
-      setValidFolderFormat(false)
-      return
-    }
+    // if (!regExp.test(folderValue)) {
+    //   setValidFolderFormat(false)
+    //   return
+    // }
 
     const newFolderOption = {
       displayName: folderValue,
@@ -102,7 +103,7 @@ function index() {
       [STORAGE_KEY_VAULT_FOLDER]: [...folderOptions, newFolderOption]
     })
 
-    setFolderOptions((prev) => {
+    setFolderOptions(prev => {
       return [...prev, newFolderOption]
     })
     folderInputRef.current.value = ""
@@ -110,7 +111,7 @@ function index() {
   }
 
   const handleDefaultFolder = async (value: string) => {
-    const result = folderOptions.map((o) => {
+    const result = folderOptions.map(o => {
       o.isDefault = false
       if (o.folder === value) {
         o.isDefault = true
@@ -124,7 +125,7 @@ function index() {
   }
 
   const handleFolderOptionDelete = async (option: VaultFolderOption) => {
-    const result = folderOptions.filter((o) => o.folder !== option.folder)
+    const result = folderOptions.filter(o => o.folder !== option.folder)
     await chrome.storage.sync.set({
       [STORAGE_KEY_VAULT_FOLDER]: result
     })

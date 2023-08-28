@@ -1,5 +1,9 @@
-export const getFileName = (title) => {
-  return title.replace(":", "").replace(/\//g, "-").replace(/\\/g, "-")
+export const getFileName = (title: string): string => {
+  return title
+    .replace(":", "")
+    .replace(/\//g, "-")
+    .replace(/\\/g, "-")
+    .substring(0, 16)
 }
 
 export const getFirstLineContent = (content: string) => {

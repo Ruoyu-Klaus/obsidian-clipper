@@ -15,8 +15,8 @@ function MultiDropDown(props: MultiDropdownProps) {
     <>
       <div className="relative">
         <button
-          onClick={() => setShowDropdown((pre) => !pre)}
-          className="w-40 text-gray-400 hover:text-white focus:outline-none font-medium rounded-lg text-sm px-2.5 py-2.5 text-center inline-flex items-center bg-darkGrey hover:bg-blue-800 focus:ring-blue-900 relative"
+          onClick={() => setShowDropdown(pre => !pre)}
+          className="min-w-[100px] pr-8 text-gray-400 hover:text-white focus:outline-none font-medium rounded-lg text-sm px-2.5 py-2.5 text-center inline-flex items-center bg-darkGrey hover:bg-blue-800 focus:ring-blue-900 relative"
           type="button">
           {props.selectedValue?.displayName || "Select a folder"}
           <svg
@@ -42,7 +42,7 @@ function MultiDropDown(props: MultiDropdownProps) {
           <ul
             className="py-2 text-sm text-gray-700 dark:text-gray-200"
             aria-labelledby="multiLevelDropdownButton">
-            {props.values.map((vaultFolderOption) => {
+            {props.values.map(vaultFolderOption => {
               return (
                 <li key={vaultFolderOption.folder}>
                   <a
