@@ -1,6 +1,6 @@
 
 
-## Welcome
+## Hi
 
 <p align="left">
   <a href="https://github.com/Ruoyu-Klaus/obsidian-clipper/releases" target="_blank">
