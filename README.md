@@ -51,6 +51,7 @@ Obsidian Clipper is a browser extension used for parsing and clipping web conten
 - Manage Downloads: necessary to be able to download the markdown file.
 
 
+
 ## License
 
 MIT License
