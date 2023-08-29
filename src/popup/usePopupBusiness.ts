@@ -1,6 +1,8 @@
 import dayjs from "dayjs"
 import { useEffect, useState } from "react"
 
+import { useStorage } from "@plasmohq/storage/hook"
+
 import {
   POPUP_OPEN_EVENT,
   STORAGE_KEY_CLIPPING_FORMAT,
@@ -8,14 +10,19 @@ import {
   STORAGE_KEY_VAULT_FOLDER
 } from "~const"
 import { Article, MESSAGE_TARGET, Message, VaultFolderOption } from "~types"
-import { getFileName, getUserStoreValueByKey } from "~utils"
+import { getFileName } from "~utils"
 
 export const usePopupBusiness = () => {
   const [content, setParsedContent] = useState<Article>()
   const [article, setArticle] = useState<string>()
-  const [vaultFolderOptions, setVaultFolderOptions] = useState<
-    VaultFolderOption[]
-  >([])
+
+  const [vaultFolderOptions] = useStorage<VaultFolderOption[]>(
+    STORAGE_KEY_VAULT_FOLDER,
+    []
+  )
+
+  const [formatText] = useStorage<string>(STORAGE_KEY_CLIPPING_FORMAT)
+  const [dateFormat] = useStorage<string>(STORAGE_KEY_DATE_FORMAT)
 
   const notifyContent = async () => {
     try {
@@ -35,25 +42,12 @@ export const usePopupBusiness = () => {
       }
       const response: Article = await chrome.tabs.sendMessage(tab.id, message)
       if (!response) return
-      const dateFormat = await getUserStoreValueByKey(STORAGE_KEY_DATE_FORMAT)
       response.date = dayjs().format(dateFormat)
       setParsedContent(response)
-
-      const formatTemplate = await getUserStoreValueByKey(
-        STORAGE_KEY_CLIPPING_FORMAT
-      )
-      const article = parseFormatTemplate(formatTemplate, response)
-
+      const article = parseFormatTemplate(formatText, response)
       setArticle(article)
     } catch (error) {
       setArticle("⚠ Something wrong, please try again!")
-    }
-  }
-
-  const getExtraFolder = async () => {
-    const extraFolder = await getUserStoreValueByKey(STORAGE_KEY_VAULT_FOLDER)
-    if (extraFolder) {
-      setVaultFolderOptions(extraFolder)
     }
   }
 
@@ -72,12 +66,14 @@ export const usePopupBusiness = () => {
   }
 
   useEffect(() => {
-    if (chrome) {
-      getExtraFolder()
-      notifyContent()
-    }
     document.documentElement.setAttribute("data-color-mode", "dark")
   }, [])
+
+  useEffect(() => {
+    if (chrome && formatText && dateFormat) {
+      notifyContent()
+    }
+  }, [formatText, dateFormat])
 
   return {
     article,

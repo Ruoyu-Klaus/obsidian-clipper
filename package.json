@@ -1,7 +1,7 @@
 {
   "name": "obsidian-clipper",
   "displayName": "Obsidian clipper",
-  "version": "1.3.2",
+  "version": "1.3.5",
   "description": "Easy to clip web content and paste into your obsidian vault",
   "author": "Ruoyu",
   "scripts": {
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.2",
+    "@plasmohq/storage": "^1.7.2",
     "@uiw/react-md-editor": "^3.20.5",
     "dayjs": "^1.11.7",
     "dompurify": "^3.0.1",

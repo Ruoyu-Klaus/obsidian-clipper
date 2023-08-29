@@ -10,7 +10,7 @@ export type RadioButtonsProps = {
 
 function RadioButtons(props: RadioButtonsProps) {
   const { options, onOptionChange, onOptionDelete } = props
-  const handleClickRadio = (e) => {
+  const handleClickRadio = e => {
     if (e.target.checked && e.target.value) {
       onOptionChange(e.target.value)
     }
@@ -32,7 +32,7 @@ function RadioButtons(props: RadioButtonsProps) {
               name="folders"
               value={option.folder}
               className="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 "
-              checked={option.isDefault}
+              defaultChecked={option.isDefault}
             />
             <label
               htmlFor={`${option.folder}-${key}`}
