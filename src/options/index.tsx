@@ -228,7 +228,7 @@ function index() {
         </div>
         <div className="sm:max-w-md sm:w-full sm:mx-auto px-4 py-6 border-t-2 border-gray-200 sm:px-10">
           <p className="text-xs leading-5 text-gray-500">
-            © 2023 Ruoyu. All rights reserved. v1.3.5
+            © 2023 Ruoyu. All rights reserved. v1.3.6
           </p>
         </div>
       </div>
